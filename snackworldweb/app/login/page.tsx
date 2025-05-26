@@ -1,48 +1,30 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import Link from "next/link"
+import { useAuth } from "@/app/contexts/AuthContext"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
+  const { login, isLoading } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
     setError("")
 
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ correo: email, contrasena: password }),
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        document.cookie = `auth-token=${data.token}; path=/`
-        router.push("/dashboard")
-      } else {
-        setError("Invalid credentials")
-      }
-    } catch (err) {
-      setError("Login failed. Please try again.")
-    } finally {
-      setLoading(false)
+      await login(email, password)
+      // El AuthContext se encarga de la redirección
+    } catch (err: any) {
+      console.error('Error en login:', err)
+      setError(err.response?.data?.message || "Credenciales inválidas")
     }
   }
 
@@ -85,16 +67,9 @@ export default function LoginPage() {
               />
             </div>
 
-            <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600" disabled={loading}>
-              {loading ? "Signing in..." : "Sign In"}
+            <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600" disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Sign In"}
             </Button>
-
-            <div className="text-center text-sm">
-              {"Don't have an account? "}
-              <Link href="/register" className="text-orange-500 hover:underline">
-                Register here
-              </Link>
-            </div>
           </form>
         </CardContent>
       </Card>
