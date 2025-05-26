@@ -177,11 +177,16 @@ export const authService = {
                 // En Next.js usamos cookies
                 document.cookie = `auth-token=${response.data.token}; path=/; max-age=${7 * 24 * 60 * 60}`; // 7 días
                 console.log('Token guardado en cookie');
+            } else {
+                throw new Error('No se recibió token en la respuesta');
             }
 
             return response.data;
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error en login:', error);
+            if (error.response?.data?.message) {
+                throw new Error(error.response.data.message);
+            }
             throw error;
         }
     },

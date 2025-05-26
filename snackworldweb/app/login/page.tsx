@@ -24,7 +24,7 @@ export default function LoginPage() {
       // El AuthContext se encarga de la redirección
     } catch (err: any) {
       console.error('Error en login:', err)
-      setError(err.response?.data?.message || "Credenciales inválidas")
+      setError(err.message || "Error al iniciar sesión. Por favor, intente nuevamente.")
     }
   }
 
