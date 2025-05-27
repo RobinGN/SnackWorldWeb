@@ -111,7 +111,7 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <h1 className="text-2xl font-bold text-orange-500">Snack World</h1>
-              <span className="ml-2 text-sm text-gray-500">Panel de Administración</span>
+              <span className="ml-2 text-sm text-gray-500">Panel de Administrador</span>
             </div>
             <Button variant="outline" onClick={handleLogout}>
               Cerrar Sesión
@@ -145,7 +145,7 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Valor Total</CardTitle>
+              <CardTitle className="text-sm font-medium">Ganancia Total</CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -157,7 +157,7 @@ export default function DashboardPage() {
         {/* Snack Boxes Section */}
         <div className="mb-12">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold">Administrar Cajas de Snacks</h2>
+            <h2 className="text-xl font-semibold">Administrar Snack Boxes</h2>
             <Link href="/dashboard/create">
               <Button className="bg-orange-500 hover:bg-orange-600">
                 <Plus className="h-4 w-4 mr-2" />
