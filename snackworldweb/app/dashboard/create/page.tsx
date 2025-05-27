@@ -78,9 +78,9 @@ export default function CreateBoxPage() {
           <div className="flex items-center h-16">
             <Link href="/dashboard" className="flex items-center text-gray-600 hover:text-gray-900">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Dashboard
+              Regresar al Panel de Administrador
             </Link>
-            <h1 className="ml-4 text-xl font-semibold">Create New Snack Box</h1>
+            <h1 className="ml-4 text-xl font-semibold">Crear una nueva SnackBox</h1>
           </div>
         </div>
       </header>
@@ -88,8 +88,8 @@ export default function CreateBoxPage() {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Card>
           <CardHeader>
-            <CardTitle>Add New Snack Box</CardTitle>
-            <CardDescription>Fill in the details below to create a new snack box for your customers</CardDescription>
+            <CardTitle>Agregar una nueva SnackBox al Catálogo</CardTitle>
+            <CardDescription>Llenar los campos para crear una nueva SnackBox para los clientes</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -101,10 +101,10 @@ export default function CreateBoxPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="nombre">Nombre de la Caja</Label>
+                  <Label htmlFor="nombre">Nombre de la SnackBox</Label>
                   <Input
                     id="nombre"
-                    placeholder="ej., Dulces Tradicionales Japoneses"
+                    placeholder="Escribe el nombre de la SnackBox"
                     value={formData.nombre}
                     onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                     required
@@ -115,7 +115,7 @@ export default function CreateBoxPage() {
                   <Label htmlFor="pais">País</Label>
                   <Input
                     id="pais"
-                    placeholder="ej., Japón"
+                    placeholder="País de origen"
                     value={formData.pais}
                     onChange={(e) => setFormData({ ...formData, pais: e.target.value })}
                     required
@@ -127,7 +127,7 @@ export default function CreateBoxPage() {
                 <Label htmlFor="descripcion">Descripción</Label>
                 <Textarea
                   id="descripcion"
-                  placeholder="Describe qué hace especial a esta caja de snacks..."
+                  placeholder="Describe qué hace especial a esta SnackBox..."
                   value={formData.descripcion}
                   onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
                   rows={3}
@@ -137,11 +137,11 @@ export default function CreateBoxPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="imagen">Image URL</Label>
+                  <Label htmlFor="imagen">URL de la Imagen</Label>
                   <Input
                     id="imagen"
                     type="url"
-                    placeholder="https://example.com/image.jpg"
+                    placeholder="https://ejemplo.com/imagenjpg"
                     value={formData.imagen}
                     onChange={(e) => setFormData({ ...formData, imagen: e.target.value })}
                     required
@@ -149,7 +149,7 @@ export default function CreateBoxPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="precio">Price ($)</Label>
+                  <Label htmlFor="precio">Precio ($)</Label>
                   <Input
                     id="precio"
                     type="number"
@@ -164,10 +164,10 @@ export default function CreateBoxPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>Products in this box</Label>
+                <Label>Productos en esta SnackBox</Label>
                 <div className="flex gap-2">
                   <Input
-                    placeholder="Add a product (e.g., Pocky Sticks)"
+                    placeholder="Agrega los productos que contendrá la SnackBox"
                     value={newProduct}
                     onChange={(e) => setNewProduct(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addProduct())}
@@ -193,11 +193,11 @@ export default function CreateBoxPage() {
 
               <div className="flex gap-4 pt-4">
                 <Button type="submit" className="bg-orange-500 hover:bg-orange-600" disabled={loading}>
-                  {loading ? "Creating..." : "Create Snack Box"}
+                  {loading ? "Creando..." : "Crear SnackBox"}
                 </Button>
                 <Link href="/dashboard">
                   <Button type="button" variant="outline">
-                    Cancel
+                    Cancelar
                   </Button>
                 </Link>
               </div>

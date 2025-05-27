@@ -30,25 +30,32 @@ export const useUsuarios = () => {
             
             // Usar el endpoint correcto de admin
             const response = await apiFetch.getUsuarios();
+            console.log('RESPUESTA USUARIOS BACKEND', response);
             // Si la respuesta ya trae stats, úsalos directamente
             if (response && typeof response === 'object' && 'usuarios' in response) {
                 setData({
                     totalUsers: response.totalUsers ?? response.usuarios.length,
-                    totalSubscriptions: response.totalSubscriptions ?? response.usuarios.filter((u: Usuario) => u.suscripcionActiva).length,
-                    totalValue: response.totalValue ?? (response.usuarios.filter((u: Usuario) => u.suscripcionActiva).length * 50),
-                    usuarios: response.usuarios
+                    totalSubscriptions: response.totalSubscriptions ?? response.usuarios.filter((u: any) => u.suscripcionActiva).length,
+                    totalValue: response.totalValue ?? (response.usuarios.filter((u: any) => u.suscripcionActiva).length * 50),
+                    usuarios: response.usuarios.map((u: any) => ({
+                        ...u,
+                        fechaRegistro: u.fechaRegistro || u.createdAt || ''
+                    }))
                 });
             } else {
                 // fallback: solo array de usuarios
                 const usuariosArray = Array.isArray(response) ? response : response.usuarios || [];
                 const totalUsers = usuariosArray.length;
-                const totalSubscriptions = usuariosArray.filter((user: Usuario) => user.suscripcionActiva).length;
+                const totalSubscriptions = usuariosArray.filter((user: any) => user.suscripcionActiva).length;
                 const totalValue = totalSubscriptions * 50;
                 setData({
                     totalUsers,
                     totalSubscriptions,
                     totalValue,
-                    usuarios: usuariosArray
+                    usuarios: usuariosArray.map((u: any) => ({
+                        ...u,
+                        fechaRegistro: u.fechaRegistro || u.createdAt || ''
+                    }))
                 });
             }
         } catch (err: any) {
