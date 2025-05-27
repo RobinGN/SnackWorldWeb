@@ -265,50 +265,59 @@ export default function DashboardPage() {
             </Card>
           ) : (
             <div className="grid grid-cols-1 gap-4">
-              {usuariosData.usuarios.map((usuario) => (
-                <Card key={usuario._id}>
-                  <CardContent className="flex items-center justify-between p-6">
-                    <div className="flex items-center space-x-4">
+              {usuariosData.usuarios.map((usuario) => {
+                // Log para depuración
+                console.log('Fecha de registro:', usuario.fechaRegistro)
+                let fechaValida = ''
+                if (usuario.fechaRegistro) {
+                  const fecha = new Date(usuario.fechaRegistro)
+                  fechaValida = isNaN(fecha.getTime()) ? '' : fecha.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })
+                }
+                return (
+                  <Card key={usuario._id}>
+                    <CardContent className="flex items-center justify-between p-6">
+                      <div className="flex items-center space-x-4">
+                        <div className="flex-shrink-0">
+                          <div className="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center">
+                            <User className="h-5 w-5 text-orange-600" />
+                          </div>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center space-x-2">
+                            <p className="text-sm font-medium text-gray-900 truncate">{usuario.nombre}</p>
+                            {usuario.suscripcionActiva && (
+                              <Badge variant="default" className="bg-green-100 text-green-800">
+                                Suscripción Activa
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center space-x-4 mt-1">
+                            <p className="text-sm text-gray-500 flex items-center">
+                              <Mail className="h-3 w-3 mr-1" />
+                              {usuario.correo}
+                            </p>
+                            <p className="text-sm text-gray-500 flex items-center">
+                              <Calendar className="h-3 w-3 mr-1" />
+                              Registrado el {fechaValida || 'Fecha no disponible'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                       <div className="flex-shrink-0">
-                        <div className="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center">
-                          <User className="h-5 w-5 text-orange-600" />
-                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDeleteUser(usuario)}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          Eliminar
+                        </Button>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2">
-                          <p className="text-sm font-medium text-gray-900 truncate">{usuario.nombre}</p>
-                          {usuario.suscripcionActiva && (
-                            <Badge variant="default" className="bg-green-100 text-green-800">
-                              Suscripción Activa
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="flex items-center space-x-4 mt-1">
-                          <p className="text-sm text-gray-500 flex items-center">
-                            <Mail className="h-3 w-3 mr-1" />
-                            {usuario.correo}
-                          </p>
-                          <p className="text-sm text-gray-500 flex items-center">
-                            <Calendar className="h-3 w-3 mr-1" />
-                            Registrado el {new Date(usuario.fechaRegistro).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex-shrink-0">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDeleteUser(usuario)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                      >
-                        <Trash2 className="h-4 w-4 mr-1" />
-                        Eliminar
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                )
+              })}
             </div>
           )}
         </div>
