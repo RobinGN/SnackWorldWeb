@@ -104,7 +104,7 @@ export const apiFetch = {
 
     getSuscripciones: async () => {
         try {
-            const response = await api.get('/api/subscription'); // Corregido: subscription no suscription
+            const response = await api.get('/api/subscription/activas'); // Corregido: subscription no suscription
             console.log('Suscripciones activas', response.data);
             return response.data;
         } catch (e: any) {
@@ -112,6 +112,19 @@ export const apiFetch = {
             throw e;
         }
     },
+
+    getRevenue: async () => {
+        try{
+            const response = await api.get('/api/subscription/ingresos');
+            console.log('Total de ingresos', response.data);
+            return response.data;
+        } catch (e: any) {
+            console.error('Error al momento de obtener los ingresos', e);
+            throw e;
+        }
+    },
+    
+
 
     // Métodos específicos para cajas (CRUD completo para admin)
     crearCaja: async (cajaData: any) => {

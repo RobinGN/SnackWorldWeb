@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { apiFetch } from "@/lib/api"
 
 interface SnackBox {
   _id: string
@@ -47,6 +48,29 @@ export default function DashboardPage() {
   const [deleteReason, setDeleteReason] = useState("")
 
   const router = useRouter()
+
+  const [totalSuscripciones, setTotalSuscripciones] = useState<number>(0)
+  const [gananciaTotal, setGananciaTotal] = useState<number>(0)
+  const [loadingStats, setLoadingStats] = useState(true)
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const suscripciones = await apiFetch.getSuscripciones()
+        const revenue = await apiFetch.getRevenue()
+        console.log('Respuesta getSuscripciones:', suscripciones)
+        console.log('Respuesta getRevenue:', revenue)
+        setTotalSuscripciones(Number(suscripciones?.totalActivas) || 0)
+        setGananciaTotal(Number((revenue?.ingresosEsperados || "0").replace(/[^0-9.]/g, "")) || 0)
+      } catch (e) {
+        setTotalSuscripciones(0)
+        setGananciaTotal(0)
+      } finally {
+        setLoadingStats(false)
+      }
+    }
+    fetchStats()
+  }, [])
 
   const handleDeleteBox = async (id: string) => {
     if (confirm("¿Estás seguro de que deseas eliminar esta caja de snacks?")) {
@@ -89,7 +113,7 @@ export default function DashboardPage() {
     }
   }
 
-  if (loadingCajas || loadingUsuarios) {
+  if (loadingCajas || loadingUsuarios || loadingStats) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-orange-500"></div>
@@ -99,8 +123,8 @@ export default function DashboardPage() {
 
   const stats = {
     totalUsers: usuariosData?.totalUsers || 0,
-    totalSubscriptions: usuariosData?.totalSubscriptions || 0,
-    totalValue: usuariosData?.totalValue || 0,
+    totalSubscriptions: totalSuscripciones,
+    totalValue: gananciaTotal,
   }
 
   return (
@@ -139,7 +163,7 @@ export default function DashboardPage() {
               <Package className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.totalSubscriptions}</div>
+              <div className="text-2xl font-bold">{Number(stats.totalSubscriptions) || 0}</div>
             </CardContent>
           </Card>
 
@@ -149,7 +173,7 @@ export default function DashboardPage() {
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">${stats.totalValue.toLocaleString()}</div>
+              <div className="text-2xl font-bold">${Number(stats.totalValue).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
             </CardContent>
           </Card>
         </div>
