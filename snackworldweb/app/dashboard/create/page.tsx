@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { X, Plus, ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import { apiFetch } from "@/lib/api"
 
 export default function CreateBoxPage() {
   const [formData, setFormData] = useState({
@@ -40,22 +41,11 @@ export default function CreateBoxPage() {
     }
 
     try {
-      const response = await fetch("/api/cajas", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          precio: Number.parseFloat(formData.precio),
-        }),
+      await apiFetch.crearCaja({
+        ...formData,
+        precio: Number.parseFloat(formData.precio),
       })
-
-      if (response.ok) {
-        router.push("/dashboard")
-      } else {
-        setError("Failed to create snack box. Please try again.")
-      }
+      router.push("/dashboard")
     } catch (err) {
       setError("Failed to create snack box. Please try again.")
     } finally {

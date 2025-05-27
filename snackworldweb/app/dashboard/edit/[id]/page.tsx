@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { X, Plus, ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import { apiFetch } from "@/lib/api"
 
 interface SnackBox {
   _id: string
@@ -24,7 +25,7 @@ interface SnackBox {
   productos: string[]
 }
 
-export default function EditBoxPage({ params }: { params: { id: string } }) {
+export default function EditBoxPage({ params }: { params: any }) {
   const [formData, setFormData] = useState({
     nombre: "",
     pais: "",
@@ -37,28 +38,36 @@ export default function EditBoxPage({ params }: { params: { id: string } }) {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const [initialLoading, setInitialLoading] = useState(true)
+  const [boxId, setBoxId] = useState<string | null>(null)
   const router = useRouter()
 
   useEffect(() => {
-    fetchBox()
-  }, [])
+    // Soporta promesa en params (Next.js 15+)
+    if (typeof params.then === "function") {
+      params.then((resolved: any) => setBoxId(resolved.id))
+    } else {
+      setBoxId(params.id)
+    }
+  }, [params])
 
-  const fetchBox = async () => {
+  useEffect(() => {
+    if (boxId) {
+      fetchBox(boxId)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boxId])
+
+  const fetchBox = async (id: string) => {
     try {
-      const response = await fetch(`/api/cajas/${params.id}`)
-      if (response.ok) {
-        const box: SnackBox = await response.json()
-        setFormData({
-          nombre: box.nombre,
-          pais: box.pais,
-          descripcion: box.descripcion,
-          imagen: box.imagen,
-          precio: box.precio.toString(),
-          productos: box.productos,
-        })
-      } else {
-        setError("Box not found")
-      }
+      const box = await apiFetch.getCajaById(id)
+      setFormData({
+        nombre: box.nombre,
+        pais: box.pais,
+        descripcion: box.descripcion,
+        imagen: box.imagen,
+        precio: box.precio.toString(),
+        productos: box.productos,
+      })
     } catch (error) {
       setError("Failed to load box")
     } finally {
@@ -78,22 +87,12 @@ export default function EditBoxPage({ params }: { params: { id: string } }) {
     }
 
     try {
-      const response = await fetch(`/api/cajas/${params.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          precio: Number.parseFloat(formData.precio),
-        }),
+      if (!boxId) throw new Error("No box id")
+      await apiFetch.actualizarCaja(boxId, {
+        ...formData,
+        precio: Number.parseFloat(formData.precio),
       })
-
-      if (response.ok) {
-        router.push("/dashboard")
-      } else {
-        setError("Failed to update snack box. Please try again.")
-      }
+      router.push("/dashboard")
     } catch (err) {
       setError("Failed to update snack box. Please try again.")
     } finally {

@@ -116,13 +116,27 @@ export const apiFetch = {
     // Métodos específicos para cajas (CRUD completo para admin)
     crearCaja: async (cajaData: any) => {
         try {
-            console.log('Creando nueva caja');
-            const response = await api.post('/api/cajas', cajaData);
+            // Validar y limpiar el payload antes de enviarlo
+            const payload = {
+                nombre: cajaData.nombre?.trim(),
+                pais: cajaData.pais?.trim(),
+                descripcion: cajaData.descripcion?.trim(),
+                imagen: cajaData.imagen?.trim(),
+                precio: Number(cajaData.precio),
+                productos: Array.isArray(cajaData.productos) ? (cajaData.productos as string[]).filter((p) => !!p && p.trim() !== "") : [],
+            };
+            if (!payload.nombre || !payload.pais || !payload.descripcion || !payload.imagen || !payload.precio || payload.productos.length === 0) {
+                throw new Error("Todos los campos son obligatorios y debe haber al menos un producto.");
+            }
+            console.log('Payload enviado a /api/cajas:', payload);
+            const response = await api.post('/api/cajas', payload);
             console.log('Caja creada', response.data);
             return response.data;
         } catch (e: any) {
-            console.error('Error creando caja', e);
-            throw e;
+            // Mostrar el mensaje real del backend si existe
+            const backendMsg = e?.response?.data?.message || e?.response?.data?.error;
+            console.error('Error creando caja', backendMsg || e);
+            throw new Error(backendMsg || 'Error creando caja');
         }
     },
 

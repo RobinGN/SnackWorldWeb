@@ -8,6 +8,8 @@ import { Plus, Edit, Trash2, Package, DollarSign, Globe, User, Mail, Calendar } 
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import { useCajas } from "@/hooks/useCajas"
+import { useUsuarios } from "@/hooks/useUsuarios"
 
 interface SnackBox {
   _id: string
@@ -28,73 +30,18 @@ interface Usuario {
 }
 
 export default function DashboardPage() {
-  const [boxes, setBoxes] = useState<SnackBox[]>([])
-  const [usuarios, setUsuarios] = useState<Usuario[]>([])
-  const [loading, setLoading] = useState(true)
-  const [stats, setStats] = useState({
-    totalUsers: 0,
-    totalSubscriptions: 0,
-    totalValue: 0,
-  })
+  const { cajas, loading: loadingCajas, error: errorCajas, refetch: refetchCajas, eliminarCaja } = useCajas()
+  const { data: usuariosData, loading: loadingUsuarios, error: errorUsuarios, refetch: refetchUsuarios, eliminarUsuario } = useUsuarios()
+
   const router = useRouter()
-
-  useEffect(() => {
-    fetchData()
-  }, [])
-
-  const fetchData = async () => {
-    try {
-      // Fetch boxes
-      const boxesResponse = await fetch("/api/cajas")
-      if (boxesResponse.ok) {
-        const boxesData = await boxesResponse.json()
-        setBoxes(boxesData)
-      }
-
-      // Fetch admin stats and users
-      const adminResponse = await fetch("/api/admin/usuarios")
-      if (adminResponse.ok) {
-        const adminData = await adminResponse.json()
-        setStats({
-          totalUsers: adminData.totalUsers || 0,
-          totalSubscriptions: adminData.totalSubscriptions || 0,
-          totalValue: adminData.totalValue || 0,
-        })
-        setUsuarios(adminData.usuarios || [])
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const handleDeleteBox = async (id: string) => {
     if (confirm("Are you sure you want to delete this snack box?")) {
       try {
-        const response = await fetch(`/api/cajas/${id}`, {
-          method: "DELETE",
-        })
-        if (response.ok) {
-          fetchData() // Refresh the data
-        }
+        await eliminarCaja(id)
+        // refetchCajas() // Si el hook no lo hace automáticamente
       } catch (error) {
         console.error("Error deleting box:", error)
-      }
-    }
-  }
-
-  const handleDeleteUser = async (id: string) => {
-    if (confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
-      try {
-        const response = await fetch(`/api/admin/usuarios/${id}`, {
-          method: "DELETE",
-        })
-        if (response.ok) {
-          fetchData() // Refresh the data
-        }
-      } catch (error) {
-        console.error("Error deleting user:", error)
       }
     }
   }
@@ -104,12 +51,29 @@ export default function DashboardPage() {
     router.push("/login")
   }
 
-  if (loading) {
+  const handleDeleteUser = async (id: string) => {
+    if (confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
+      try {
+        await eliminarUsuario(id)
+        // refetchUsuarios() // Si el hook no lo hace automáticamente
+      } catch (error) {
+        console.error("Error deleting user:", error)
+      }
+    }
+  }
+
+  if (loadingCajas || loadingUsuarios) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-orange-500"></div>
       </div>
     )
+  }
+
+  const stats = {
+    totalUsers: usuariosData?.totalUsers || 0,
+    totalSubscriptions: usuariosData?.totalSubscriptions || 0,
+    totalValue: usuariosData?.totalValue || 0,
   }
 
   return (
@@ -175,7 +139,7 @@ export default function DashboardPage() {
             </Link>
           </div>
 
-          {boxes.length === 0 ? (
+          {cajas.length === 0 ? (
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <Package className="h-12 w-12 text-gray-400 mb-4" />
@@ -191,7 +155,7 @@ export default function DashboardPage() {
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {boxes.map((box) => (
+              {cajas.map((box) => (
                 <Card key={box._id} className="overflow-hidden">
                   <div className="aspect-video relative">
                     <Image
@@ -260,11 +224,11 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold">Manage Users</h2>
             <Badge variant="secondary" className="text-sm">
-              {usuarios.length} registered users
+              {usuariosData?.usuarios?.length || 0} registered users
             </Badge>
           </div>
 
-          {usuarios.length === 0 ? (
+          {!usuariosData?.usuarios || usuariosData.usuarios.length === 0 ? (
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <User className="h-12 w-12 text-gray-400 mb-4" />
@@ -274,7 +238,7 @@ export default function DashboardPage() {
             </Card>
           ) : (
             <div className="grid grid-cols-1 gap-4">
-              {usuarios.map((usuario) => (
+              {usuariosData.usuarios.map((usuario) => (
                 <Card key={usuario._id}>
                   <CardContent className="flex items-center justify-between p-6">
                     <div className="flex items-center space-x-4">
