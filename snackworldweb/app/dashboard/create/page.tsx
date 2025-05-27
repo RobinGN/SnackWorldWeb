@@ -101,10 +101,10 @@ export default function CreateBoxPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="nombre">Box Name</Label>
+                  <Label htmlFor="nombre">Nombre de la Caja</Label>
                   <Input
                     id="nombre"
-                    placeholder="e.g., Traditional Japanese Sweets"
+                    placeholder="ej., Dulces Tradicionales Japoneses"
                     value={formData.nombre}
                     onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                     required
@@ -112,10 +112,10 @@ export default function CreateBoxPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="pais">Country</Label>
+                  <Label htmlFor="pais">País</Label>
                   <Input
                     id="pais"
-                    placeholder="e.g., Japan"
+                    placeholder="ej., Japón"
                     value={formData.pais}
                     onChange={(e) => setFormData({ ...formData, pais: e.target.value })}
                     required
@@ -124,10 +124,10 @@ export default function CreateBoxPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="descripcion">Description</Label>
+                <Label htmlFor="descripcion">Descripción</Label>
                 <Textarea
                   id="descripcion"
-                  placeholder="Describe what makes this snack box special..."
+                  placeholder="Describe qué hace especial a esta caja de snacks..."
                   value={formData.descripcion}
                   onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
                   rows={3}

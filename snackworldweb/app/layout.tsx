@@ -6,8 +6,8 @@ import { AuthProvider } from "@/app/contexts/AuthContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Snack World - Admin Dashboard",
-  description: "Manage your snack boxes and reach customers worldwide",
+  title: "Snack World - Panel de Administración",
+  description: "Administra tus cajas de snacks y llega a clientes de todo el mundo",
 };
 
 export default function RootLayout({

@@ -135,7 +135,7 @@ export default function EditBoxPage({ params }: { params: any }) {
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Dashboard
             </Link>
-            <h1 className="ml-4 text-xl font-semibold">Edit Snack Box</h1>
+            <h1 className="ml-4 text-xl font-semibold">Editar Snack Box</h1>
           </div>
         </div>
       </header>
@@ -143,8 +143,8 @@ export default function EditBoxPage({ params }: { params: any }) {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Card>
           <CardHeader>
-            <CardTitle>Edit Snack Box</CardTitle>
-            <CardDescription>Update the details of your snack box</CardDescription>
+            <CardTitle>Editar Caja de Snacks</CardTitle>
+            <CardDescription>Actualiza los detalles de tu caja de snacks</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -156,10 +156,10 @@ export default function EditBoxPage({ params }: { params: any }) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="nombre">Box Name</Label>
+                  <Label htmlFor="nombre">Nombre de la Caja</Label>
                   <Input
                     id="nombre"
-                    placeholder="e.g., Traditional Japanese Sweets"
+                    placeholder="ej., Dulces Tradicionales Japoneses"
                     value={formData.nombre}
                     onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                     required
@@ -167,10 +167,10 @@ export default function EditBoxPage({ params }: { params: any }) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="pais">Country</Label>
+                  <Label htmlFor="pais">País</Label>
                   <Input
                     id="pais"
-                    placeholder="e.g., Japan"
+                    placeholder="ej., Japón"
                     value={formData.pais}
                     onChange={(e) => setFormData({ ...formData, pais: e.target.value })}
                     required
@@ -179,10 +179,10 @@ export default function EditBoxPage({ params }: { params: any }) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="descripcion">Description</Label>
+                <Label htmlFor="descripcion">Descripción</Label>
                 <Textarea
                   id="descripcion"
-                  placeholder="Describe what makes this snack box special..."
+                  placeholder="Describe qué hace especial a esta caja de snacks..."
                   value={formData.descripcion}
                   onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
                   rows={3}
