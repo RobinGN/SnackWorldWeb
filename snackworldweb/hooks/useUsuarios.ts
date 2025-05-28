@@ -9,6 +9,7 @@ interface Usuario {
     correo: string;
     fechaRegistro: string;
     suscripcionActiva: boolean;
+    suscripcion?: any;
 }
 
 interface UsuariosData {
@@ -39,7 +40,8 @@ export const useUsuarios = () => {
                     totalValue: response.totalValue ?? (response.usuarios.filter((u: any) => u.suscripcionActiva).length * 50),
                     usuarios: response.usuarios.map((u: any) => ({
                         ...u,
-                        fechaRegistro: u.fechaRegistro || u.createdAt || ''
+                        fechaRegistro: u.fechaRegistro || u.createdAt || '',
+                        suscripcion: u.suscripcion ?? null
                     }))
                 });
             } else {
@@ -54,7 +56,8 @@ export const useUsuarios = () => {
                     totalValue,
                     usuarios: usuariosArray.map((u: any) => ({
                         ...u,
-                        fechaRegistro: u.fechaRegistro || u.createdAt || ''
+                        fechaRegistro: u.fechaRegistro || u.createdAt || '',
+                        suscripcion: u.suscripcion ?? null
                     }))
                 });
             }

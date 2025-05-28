@@ -38,6 +38,7 @@ interface Usuario {
   correo: string
   fechaRegistro: string
   suscripcionActiva?: boolean
+  suscripcion?: any
 }
 
 export default function DashboardPage() {
@@ -73,12 +74,11 @@ export default function DashboardPage() {
   }, [])
 
   const handleDeleteBox = async (id: string) => {
-    if (confirm("¿Estás seguro de que deseas eliminar esta caja de snacks?")) {
+    if (confirm("¿Estás seguro de que deseas eliminar esta SnackBox?")) {
       try {
         await eliminarCaja(id)
-        // refetchCajas() // Si el hook no lo hace automáticamente
       } catch (error) {
-        console.error("Error al eliminar la caja:", error)
+        console.error("Error al eliminar la SnackBox:", error)
       }
     }
   }
@@ -309,7 +309,7 @@ export default function DashboardPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center space-x-2">
                             <p className="text-sm font-medium text-gray-900 truncate">{usuario.nombre}</p>
-                            {usuario.suscripcionActiva && (
+                            {usuario.suscripcion && usuario.suscripcion.tipo && (
                               <Badge variant="default" className="bg-green-100 text-green-800">
                                 Suscripción Activa
                               </Badge>
@@ -320,23 +320,27 @@ export default function DashboardPage() {
                               <Mail className="h-3 w-3 mr-1" />
                               {usuario.correo}
                             </p>
-                            <p className="text-sm text-gray-500 flex items-center">
-                              <Calendar className="h-3 w-3 mr-1" />
-                              Registrado el {fechaValida || 'Fecha no disponible'}
-                            </p>
+                            {fechaValida && (
+                              <p className="text-sm text-gray-500 flex items-center">
+                                <Calendar className="h-3 w-3 mr-1" />
+                                Registrado el {fechaValida}
+                              </p>
+                            )}
                           </div>
                         </div>
                       </div>
                       <div className="flex-shrink-0">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDeleteUser(usuario)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                        >
-                          <Trash2 className="h-4 w-4 mr-1" />
-                          Eliminar
-                        </Button>
+                        {usuario.correo !== 'admin@demo.com' && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDeleteUser(usuario)}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <Trash2 className="h-4 w-4 mr-1" />
+                            Eliminar
+                          </Button>
+                        )}
                       </div>
                     </CardContent>
                   </Card>
