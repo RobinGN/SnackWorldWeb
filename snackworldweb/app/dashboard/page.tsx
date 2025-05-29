@@ -47,6 +47,10 @@ export default function DashboardPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [userToDelete, setUserToDelete] = useState<Usuario | null>(null)
   const [deleteReason, setDeleteReason] = useState("")
+  const [showCannotDeleteDialog, setShowCannotDeleteDialog] = useState(false)
+  const [userWithActiveSub, setUserWithActiveSub] = useState<Usuario | null>(null)
+  const [deleteBoxDialogOpen, setDeleteBoxDialogOpen] = useState(false)
+  const [boxToDeleteId, setBoxToDeleteId] = useState<string | null>(null)
 
   const router = useRouter()
 
@@ -73,13 +77,20 @@ export default function DashboardPage() {
     fetchStats()
   }, [])
 
-  const handleDeleteBox = async (id: string) => {
-    if (confirm("¿Estás seguro de que deseas eliminar esta SnackBox?")) {
-      try {
-        await eliminarCaja(id)
-      } catch (error) {
-        console.error("Error al eliminar la SnackBox:", error)
-      }
+  const handleDeleteBox = (id: string) => {
+    setBoxToDeleteId(id)
+    setDeleteBoxDialogOpen(true)
+  }
+
+  const confirmDeleteBox = async () => {
+    if (!boxToDeleteId) return
+    try {
+      await eliminarCaja(boxToDeleteId)
+    } catch (error) {
+      console.error("Error al eliminar la SnackBox:", error)
+    } finally {
+      setDeleteBoxDialogOpen(false)
+      setBoxToDeleteId(null)
     }
   }
 
@@ -89,8 +100,9 @@ export default function DashboardPage() {
   }
 
   const handleDeleteUser = async (usuario: Usuario) => {
-    if (usuario.suscripcionActiva) {
-      alert("No se puede eliminar un usuario con una suscripción activa. Por favor, cancela su suscripción primero.")
+    if (usuario.suscripcion && usuario.suscripcion.tipo) {
+      setUserWithActiveSub(usuario)
+      setShowCannotDeleteDialog(true)
       return
     }
     setUserToDelete(usuario)
@@ -178,7 +190,7 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* Snack Boxes Section */}
+        {/* Seccion de Snack Boxes */}
         <div className="mb-12">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold">Administrar Snack Boxes</h2>
@@ -270,7 +282,7 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Users Management Section */}
+        {/* Seccion para manejo de Usuarios */}
         <div>
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold">Administrar Usuarios</h2>
@@ -290,7 +302,7 @@ export default function DashboardPage() {
           ) : (
             <div className="grid grid-cols-1 gap-4">
               {usuariosData.usuarios.map((usuario) => {
-                // Log para depuración
+                // Log para checar que salio
                 console.log('Fecha de registro:', usuario.fechaRegistro)
                 let fechaValida = ''
                 if (usuario.fechaRegistro) {
@@ -379,6 +391,41 @@ export default function DashboardPage() {
               disabled={!deleteReason.trim()}
             >
               Eliminar Usuario
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showCannotDeleteDialog} onOpenChange={setShowCannotDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>No se puede eliminar el usuario</DialogTitle>
+            <DialogDescription>
+              Este usuario tiene una suscripción activa. Por favor, cancela su suscripción antes de intentar eliminarlo.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowCannotDeleteDialog(false)}>
+              Cerrar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={deleteBoxDialogOpen} onOpenChange={setDeleteBoxDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Eliminar SnackBox</DialogTitle>
+            <DialogDescription>
+              ¿Estás seguro de que deseas eliminar esta SnackBox? Esta acción no se puede deshacer.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteBoxDialogOpen(false)}>
+              Cancelar
+            </Button>
+            <Button variant="destructive" onClick={confirmDeleteBox}>
+              Eliminar SnackBox
             </Button>
           </DialogFooter>
         </DialogContent>
