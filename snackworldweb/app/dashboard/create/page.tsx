@@ -35,7 +35,7 @@ export default function CreateBoxPage() {
     setError("")
 
     if (formData.productos.length === 0) {
-      setError("Please add at least one product")
+      setError("Por favor, agrega al menos un producto")
       setLoading(false)
       return
     }
@@ -47,7 +47,7 @@ export default function CreateBoxPage() {
       })
       router.push("/dashboard")
     } catch (err) {
-      setError("Failed to create snack box. Please try again.")
+      setError("Fallo al crear la SnackBox. Por favor, intenta nuevamente.")
     } finally {
       setLoading(false)
     }

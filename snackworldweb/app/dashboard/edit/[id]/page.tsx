@@ -42,7 +42,6 @@ export default function EditBoxPage({ params }: { params: any }) {
   const router = useRouter()
 
   useEffect(() => {
-    // Soporta promesa en params (Next.js 15+)
     if (typeof params.then === "function") {
       params.then((resolved: any) => setBoxId(resolved.id))
     } else {
@@ -54,7 +53,6 @@ export default function EditBoxPage({ params }: { params: any }) {
     if (boxId) {
       fetchBox(boxId)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boxId])
 
   const fetchBox = async (id: string) => {
@@ -69,7 +67,7 @@ export default function EditBoxPage({ params }: { params: any }) {
         productos: box.productos,
       })
     } catch (error) {
-      setError("Failed to load box")
+      setError("Hubo un error al cargar la SnackBox")
     } finally {
       setInitialLoading(false)
     }
@@ -81,7 +79,7 @@ export default function EditBoxPage({ params }: { params: any }) {
     setError("")
 
     if (formData.productos.length === 0) {
-      setError("Please add at least one product")
+      setError("Por favor, agrega al menos un producto")
       setLoading(false)
       return
     }
@@ -94,7 +92,7 @@ export default function EditBoxPage({ params }: { params: any }) {
       })
       router.push("/dashboard")
     } catch (err) {
-      setError("Failed to update snack box. Please try again.")
+      setError("Fallo al actualizar la SnackBox. Por favor, intenta nuevamente.")
     } finally {
       setLoading(false)
     }
