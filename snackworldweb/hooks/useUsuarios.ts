@@ -32,7 +32,7 @@ export const useUsuarios = () => {
             // Usar el endpoint correcto de admin
             const response = await apiFetch.getUsuarios();
             console.log('RESPUESTA USUARIOS BACKEND', response);
-            // Si la respuesta ya trae stats, úsalos directamente
+            // Si la respuesta ya trae stats, úsarlos directamente
             if (response && typeof response === 'object' && 'usuarios' in response) {
                 setData({
                     totalUsers: response.totalUsers ?? response.usuarios.length,
@@ -45,7 +45,7 @@ export const useUsuarios = () => {
                     }))
                 });
             } else {
-                // fallback: solo array de usuarios
+                // Solo array de usuarios
                 const usuariosArray = Array.isArray(response) ? response : response.usuarios || [];
                 const totalUsers = usuariosArray.length;
                 const totalSubscriptions = usuariosArray.filter((user: any) => user.suscripcionActiva).length;

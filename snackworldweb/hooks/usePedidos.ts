@@ -1,3 +1,4 @@
+//no fue utilizado al final de todo el proyecto, se dejo aqui por si acaso
 "use client"
 
 import { useState, useEffect } from 'react';

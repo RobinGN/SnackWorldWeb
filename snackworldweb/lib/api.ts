@@ -12,7 +12,6 @@ const api = axios.create({
 // Interceptor para agregar el token de auth automáticamente
 api.interceptors.request.use(
     async (config) => {
-        // En Next.js usamos cookies en lugar de AsyncStorage
         const token = document.cookie
             .split('; ')
             .find(row => row.startsWith('auth-token='))
@@ -64,18 +63,7 @@ export const apiFetch = {
         }
     },
 
-    // Obtener pedidos del admin
-    getPedidos: async () => {
-        try {
-            console.log('Iniciando fetching de pedidos admin');
-            const response = await api.get('/api/admin/pedidos');
-            console.log('Datos de pedidos admin', response.data);
-            return response.data;
-        } catch (e: any) {
-            console.error('Error en fetching de pedidos admin', e);
-            throw e;
-        }
-    },
+    
 
     // Eliminar usuario (solo admin)
     eliminarUsuario: async (id: string) => {
@@ -104,7 +92,7 @@ export const apiFetch = {
 
     getSuscripciones: async () => {
         try {
-            const response = await api.get('/api/subscription/activas'); // Corregido: subscription no suscription
+            const response = await api.get('/api/subscription/activas'); 
             console.log('Suscripciones activas', response.data);
             return response.data;
         } catch (e: any) {
@@ -126,10 +114,9 @@ export const apiFetch = {
     
 
 
-    // Métodos específicos para cajas (CRUD completo para admin)
+    
     crearCaja: async (cajaData: any) => {
         try {
-            // Validar y limpiar el payload antes de enviarlo
             const payload = {
                 nombre: cajaData.nombre?.trim(),
                 pais: cajaData.pais?.trim(),
@@ -146,7 +133,6 @@ export const apiFetch = {
             console.log('Caja creada', response.data);
             return response.data;
         } catch (e: any) {
-            // Mostrar el mensaje real del backend si existe
             const backendMsg = e?.response?.data?.message || e?.response?.data?.error;
             console.error('Error creando caja', backendMsg || e);
             throw new Error(backendMsg || 'Error creando caja');
@@ -177,7 +163,6 @@ export const apiFetch = {
         }
     },
 
-    // Obtener opiniones de una caja
     getOpiniones: async (cajaId: string) => {
         try {
             console.log('Obteniendo opiniones de caja:', cajaId);
@@ -201,8 +186,7 @@ export const authService = {
             });
 
             if (response.data.token) {
-                // En Next.js usamos cookies
-                document.cookie = `auth-token=${response.data.token}; path=/; max-age=${7 * 24 * 60 * 60}`; // 7 días
+                document.cookie = `auth-token=${response.data.token}; path=/; max-age=${7 * 24 * 60 * 60}`; 
                 console.log('Token guardado en cookie');
             } else {
                 throw new Error('No se recibió token en la respuesta');
@@ -220,7 +204,6 @@ export const authService = {
 
     logout: async () => {
         try {
-            // Eliminar cookie
             document.cookie = 'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
             return { success: true };
         } catch (error) {
